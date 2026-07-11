@@ -11,42 +11,38 @@
     <div class="container">
         <h1>Activity Tracker</h1>
         
-        <!-- लोडर -->
         <div id="loader">डेटा लोड होत आहे...</div>
 
-        <!-- मुख्य फॉर्म -->
-        <form id="activityForm" style="display: none;">
+        <!-- पान रिफ्रेश होऊ नये म्हणून हिडन आयफ्रेम -->
+        <iframe name="hiddenIframe" id="hiddenIframe" style="display:none;"></iframe>
+
+        <!-- फॉर्म जो थेट गुगल स्क्रिप्टला सबमिट होईल -->
+        <form id="activityForm" method="POST" enctype="multipart/form-data" target="hiddenIframe" style="display: none;">
             <label>ॲक्टिव्हिटी:</label>
-            <select id="activity"><option value="">-- निवडा --</option></select>
+            <select name="activityName" id="activity" required><option value="">-- निवडा --</option></select>
             
             <label>वर्ग:</label>
-            <select id="classSelect"><option value="">-- निवडा --</option></select>
+            <select name="className" id="classSelect" required><option value="">-- निवडा --</option></select>
             
             <label>सेक्शन:</label>
-            <select id="sectionSelect"><option value="">-- निवडा --</option></select>
+            <select name="sectionName" id="sectionSelect" required><option value="">-- निवडा --</option></select>
             
             <label>विद्यार्थी:</label>
-            <select id="studentSelect"><option value="">-- निवडा --</option></select>
+            <select name="studentVal" id="studentSelect" required><option value="">-- निवडा --</option></select>
             
             <label>प्रयत्न:</label>
-            <input type="number" id="attempt" value="1">
+            <input type="number" name="attempt" id="attempt" value="1" required>
             
-            <div class="camera-ui">
-                <video id="videoPreview" autoplay playsinline muted></video>
-                <div class="buttons">
-                    <button type="button" id="startCameraBtn">कॅमेरा सुरू करा</button>
-                    <button type="button" id="startRecordBtn" disabled>रेकॉर्ड</button>
-                    <button type="button" id="stopRecordBtn" disabled>थांबवा</button>
-                    <button type="button" id="takePhotoBtn" disabled>फोटो</button>
-                </div>
+            <div style="margin-top: 15px; padding: 10px; background: #eef2f5; border-radius: 5px;">
+                <label>गॅलरीमधून व्हिडिओ किंवा फोटो निवडा (Max 50MB):</label>
+                <input type="file" name="mediaFile" id="mediaFile" accept="video/*, image/*" required>
+                <p id="fileStatus" style="font-weight: bold; margin-top: 5px; color: #555;"></p>
             </div>
 
-            <button type="button" id="uploadBtn" disabled>अपलोड आणि सेंड करा</button>
+            <button type="submit" id="uploadBtn" style="margin-top: 20px;">अपलोड आणि सेंड करा</button>
         </form>
     </div>
 
-    <!-- स्क्रिप्ट्स -->
-    <script src="camera.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
