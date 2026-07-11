@@ -1,9 +1,10 @@
+// तुमची गुगल ॲप्स स्क्रिप्ट URL येथे आहे
 const GAS_URL = "https://script.google.com/macros/s/AKfycbyXqhQWTfi_Ca90AnAP0oDa0WEwSaqpW6Wbqq3514YKBgl1He2LJzMTNU8kK2oGbOy0kA/exec"; 
 
 let masterData = [];
-let isUploading = false; // अपलोडिंग चालू आहे की नाही हे तपासण्यासाठी
 
 window.onload = async () => {
+    // फॉर्मची ॲक्शन URL सेट करणे
     document.getElementById('activityForm').action = GAS_URL;
 
     try {
@@ -17,12 +18,15 @@ window.onload = async () => {
             
             document.getElementById('loader').style.display = 'none';
             document.getElementById('activityForm').style.display = 'block';
+        } else {
+            document.getElementById('loader').innerText = "त्रुटी: सर्व्हरकडून योग्य डेटा मिळाला नाही.";
         }
     } catch (error) {
         document.getElementById('loader').innerText = "डेटा लोड करण्यात त्रुटी. इंटरनेट तपासा.";
     }
 };
 
+// --- ड्रॉपडाऊन भरण्याची फंक्शन्स ---
 function populateActivities(activities) {
     const select = document.getElementById('activity');
     activities.forEach(act => {
@@ -32,7 +36,7 @@ function populateActivities(activities) {
 
 function populateClasses() {
     const classSelect = document.getElementById('classSelect');
-    const classes = [...new Set(masterData.map(item => item[0]))];
+    const classes = [...new Set(masterData.map(item => item[0]))]; // Column 0 is Class
     classes.forEach(cls => {
         classSelect.innerHTML += `<option value="${cls}">${cls}</option>`;
     });
@@ -62,7 +66,7 @@ document.getElementById('sectionSelect').addEventListener('change', function() {
     });
 });
 
-// फाईल साईझ तपासणे
+// --- फाईल साईझ तपासणे (५० MB मर्यादा) ---
 document.getElementById('mediaFile').addEventListener('change', function(event) {
     const file = event.target.files[0];
     const fileStatus = document.getElementById('fileStatus');
@@ -79,7 +83,7 @@ document.getElementById('mediaFile').addEventListener('change', function(event) 
     if (file.size > maxSize) {
         fileStatus.style.color = "red";
         fileStatus.innerText = `त्रुटी: फाईलची साईझ ${fileSizeMB} MB आहे. ५० MB पेक्षा मोठी फाईल सर्व्हर स्वीकारत नाही.`;
-        this.value = "";
+        this.value = ""; // फाईल काढून टाकणे
         uploadBtn.disabled = true;
     } else {
         fileStatus.style.color = "green";
@@ -88,27 +92,30 @@ document.getElementById('mediaFile').addEventListener('change', function(event) 
     }
 });
 
-// फॉर्म सबमिट केल्यावर (बटण पिवळे करणे)
+// --- फॉर्म सबमिट केल्यावर बटण पिवळे करणे ---
 document.getElementById('activityForm').addEventListener('submit', () => {
-    isUploading = true;
     const uploadBtn = document.getElementById('uploadBtn');
     uploadBtn.innerText = "अपलोड होत आहे... कृपया ॲप बंद करू नका.";
-    uploadBtn.style.background = "#ff9800"; 
+    uploadBtn.style.background = "#ff9800"; // Orange color
     uploadBtn.disabled = true;
 });
 
-// iFrame लोड झाल्यावर (गुगलचे काम पूर्ण झाल्यावर) हे फंक्शन चालेल
-window.handleIframeLoad = function() {
-    if (isUploading) {
-        isUploading = false;
+// --- गुगल स्क्रिप्टकडून आलेला 'खरा' रिस्पॉन्स ऐकणे ---
+window.addEventListener("message", function(event) {
+    const uploadBtn = document.getElementById('uploadBtn');
+    
+    if (event.data && event.data.status === 'success') {
         alert("अपलोड यशस्वी! फाईल ड्राईव्हमध्ये सेव्ह झाली आणि लिंकचा ईमेल पाठवला गेला.");
-        
-        const uploadBtn = document.getElementById('uploadBtn');
         uploadBtn.innerText = "अपलोड आणि सेंड करा";
-        uploadBtn.style.background = "#007bff"; // निळा रंग
+        uploadBtn.style.background = "#007bff"; 
         uploadBtn.disabled = false;
         
         document.getElementById('activityForm').reset();
         document.getElementById('fileStatus').innerText = "";
+    } else if (event.data && event.data.status === 'error') {
+        alert("तांत्रिक त्रुटी: " + event.data.message);
+        uploadBtn.innerText = "अपलोड फेल. पुन्हा प्रयत्न करा";
+        uploadBtn.style.background = "red";
+        uploadBtn.disabled = false;
     }
-};
+});
