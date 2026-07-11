@@ -2,9 +2,9 @@ const CACHE_NAME = 'activity-tracker-v1';
 const urlsToCache = [
   './',
   './index.html',
-  './css/style.css',
-  './js/app.js',
-  './js/camera.js',
+  './style.css',
+  './app.js',
+  './camera.js',
   './icon.png'
 ];
 
