@@ -3,57 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Activity Tracker PWA</title>
+    <title>Activity Tracker</title>
     <link rel="stylesheet" href="style.css">
     <link rel="manifest" href="manifest.json">
 </head>
 <body>
     <div class="container">
-        <h2>Activity Tracker</h2>
-        
-        <div id="loader" class="loader">डेटा लोड होत आहे... कृपया प्रतीक्षा करा.</div>
-
+        <h1>Activity Tracker</h1>
+        <div id="loader">डेटा लोड होत आहे...</div>
         <form id="activityForm" style="display: none;">
-            <label>ॲक्टिव्हिटी निवडा:</label>
-            <select id="activity" required><option value="">-- निवडा --</option></select>
-
-            <label>वर्ग (Class):</label>
-            <select id="classSelect" required><option value="">-- निवडा --</option></select>
-
-            <label>सेक्शन (Section):</label>
-            <select id="sectionSelect" required><option value="">-- निवडा --</option></select>
-
-            <label>विद्यार्थी (Roll No - Name):</label>
-            <select id="studentSelect" required><option value="">-- निवडा --</option></select>
-
-            <label>प्रयत्न (Attempt):</label>
-            <input type="number" id="attempt" min="1" value="1" required>
-
-            <div class="camera-section">
-                <video id="videoPreview" autoplay playsinline muted></video>
-                <div class="controls">
-                    <button type="button" id="startCameraBtn">कॅमेरा सुरू करा</button>
-                    <button type="button" id="startRecordBtn" disabled>रेकॉर्ड सुरू करा</button>
-                    <button type="button" id="stopRecordBtn" disabled>रेकॉर्ड थांबवा</button>
-                    <button type="button" id="takePhotoBtn" disabled>फोटो काढा</button>
-                </div>
-                <p id="recordingStatus"></p>
-            </div>
-
-            <button type="button" id="uploadBtn" class="upload-btn" disabled>अपलोड आणि सेंड करा</button>
-            <p id="uploadStatus"></p>
+            <label>ॲक्टिव्हिटी:</label>
+            <select id="activity"><option value="">-- निवडा --</option></select>
+            <label>वर्ग:</label>
+            <select id="classSelect"><option value="">-- निवडा --</option></select>
+            <label>सेक्शन:</label>
+            <select id="sectionSelect"><option value="">-- निवडा --</option></select>
+            <label>विद्यार्थी:</label>
+            <select id="studentSelect"><option value="">-- निवडा --</option></select>
+            <label>प्रयत्न:</label>
+            <input type="number" id="attempt" value="1">
+            <video id="videoPreview" autoplay playsinline muted></video>
+            <button type="button" id="startCameraBtn">कॅमेरा सुरू करा</button>
+            <button type="button" id="startRecordBtn" disabled>रेकॉर्ड</button>
+            <button type="button" id="stopRecordBtn" disabled>थांबवा</button>
+            <button type="button" id="uploadBtn" disabled>अपलोड</button>
         </form>
     </div>
-
-    <!-- Scripts (No Folder Paths) -->
     <script src="camera.js"></script>
     <script src="app.js"></script>
-    <script>
-        // PWA Service Worker Registration
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js')
-            .then(() => console.log("Service Worker Registered"));
-        }
-    </script>
 </body>
 </html>
