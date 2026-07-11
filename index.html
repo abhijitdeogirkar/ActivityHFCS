@@ -13,10 +13,9 @@
         
         <div id="loader">डेटा लोड होत आहे...</div>
 
-        <!-- पान रिफ्रेश होऊ नये म्हणून हिडन आयफ्रेम -->
-        <iframe name="hiddenIframe" id="hiddenIframe" style="display:none;"></iframe>
+        <!-- इथे onload इव्हेंट जोडला आहे -->
+        <iframe name="hiddenIframe" id="hiddenIframe" style="display:none;" onload="handleIframeLoad()"></iframe>
 
-        <!-- फॉर्म जो थेट गुगल स्क्रिप्टला सबमिट होईल -->
         <form id="activityForm" method="POST" enctype="multipart/form-data" target="hiddenIframe" style="display: none;">
             <label>ॲक्टिव्हिटी:</label>
             <select name="activityName" id="activity" required><option value="">-- निवडा --</option></select>
