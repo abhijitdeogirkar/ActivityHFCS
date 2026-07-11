@@ -13,11 +13,8 @@
         
         <div id="loader">डेटा लोड होत आहे...</div>
 
-        <!-- पान रिफ्रेश होऊ नये म्हणून हिडन आयफ्रेम (कोणताही फेक onload नाही) -->
-        <iframe name="hiddenIframe" id="hiddenIframe" style="display:none;"></iframe>
-
-        <!-- फॉर्म जो थेट गुगल स्क्रिप्टला सबमिट होईल -->
-        <form id="activityForm" method="POST" enctype="multipart/form-data" target="hiddenIframe" style="display: none;">
+        <!-- iframe काढून टाकला आहे. आता फॉर्म थेट सबमिट होईल. -->
+        <form id="activityForm" method="POST" enctype="multipart/form-data" style="display: none;">
             <label>ॲक्टिव्हिटी:</label>
             <select name="activityName" id="activity" required><option value="">-- निवडा --</option></select>
             
@@ -34,7 +31,7 @@
             <input type="number" name="attempt" id="attempt" value="1" required>
             
             <div style="margin-top: 15px; padding: 10px; background: #eef2f5; border-radius: 5px;">
-                <label>गॅलरीमधून व्हिडिओ किंवा फोटो निवडा (Max 50MB):</label>
+                <label>व्हिडिओ किंवा फोटो निवडा (Max 50MB):</label>
                 <input type="file" name="mediaFile" id="mediaFile" accept="video/*, image/*" required>
                 <p id="fileStatus" style="font-weight: bold; margin-top: 5px; color: #555;"></p>
             </div>
