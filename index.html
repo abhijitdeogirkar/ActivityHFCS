@@ -1,35 +1,52 @@
-<!DOCTYPE html>
-<html lang="mr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Activity Tracker</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="manifest" href="manifest.json">
-</head>
-<body>
-    <div class="container">
-        <h1>Activity Tracker</h1>
-        <div id="loader">डेटा लोड होत आहे...</div>
-        <form id="activityForm" style="display: none;">
-            <label>ॲक्टिव्हिटी:</label>
-            <select id="activity"><option value="">-- निवडा --</option></select>
-            <label>वर्ग:</label>
-            <select id="classSelect"><option value="">-- निवडा --</option></select>
-            <label>सेक्शन:</label>
-            <select id="sectionSelect"><option value="">-- निवडा --</option></select>
-            <label>विद्यार्थी:</label>
-            <select id="studentSelect"><option value="">-- निवडा --</option></select>
-            <label>प्रयत्न:</label>
-            <input type="number" id="attempt" value="1">
-            <video id="videoPreview" autoplay playsinline muted></video>
-            <button type="button" id="startCameraBtn">कॅमेरा सुरू करा</button>
-            <button type="button" id="startRecordBtn" disabled>रेकॉर्ड</button>
-            <button type="button" id="stopRecordBtn" disabled>थांबवा</button>
-            <button type="button" id="uploadBtn" disabled>अपलोड</button>
-        </form>
-    </div>
-    <script src="camera.js"></script>
-    <script src="app.js"></script>
-</body>
-</html>
+let stream;
+let mediaRecorder;
+let recordedChunks = [];
+const videoPreview = document.getElementById('videoPreview');
+const recordBtn = document.getElementById('recordVideoBtn');
+
+// १. कॅमेरा सुरू करणे
+document.getElementById('startCameraBtn').addEventListener('click', async () => {
+    stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 }, audio: true });
+    videoPreview.srcObject = stream;
+    recordBtn.disabled = false;
+    document.getElementById('takePhotoBtn').disabled = false;
+});
+
+// २. व्हिडिओ रेकॉर्डिंग (Toggle Start/Stop)
+recordBtn.addEventListener('click', () => {
+    if (mediaRecorder && mediaRecorder.state === "recording") {
+        mediaRecorder.stop();
+        recordBtn.innerText = "व्हिडिओ रेकॉर्ड करा";
+    } else {
+        recordedChunks = [];
+        mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+        mediaRecorder.ondataavailable = e => recordedChunks.push(e.data);
+        mediaRecorder.onstop = async () => {
+            const blob = new Blob(recordedChunks, { type: 'video/webm' });
+            window.recordedFileData = { base64: await convertBlobToBase64(blob), mimeType: 'video/webm', extension: '.webm' };
+            document.getElementById('uploadBtn').disabled = false;
+            alert("व्हिडिओ रेकॉर्ड झाला!");
+        };
+        mediaRecorder.start();
+        recordBtn.innerText = "रेकॉर्डिंग थांबवा";
+    }
+});
+
+// ३. फोटो काढणे
+document.getElementById('takePhotoBtn').addEventListener('click', () => {
+    const canvas = document.createElement('canvas');
+    canvas.width = videoPreview.videoWidth;
+    canvas.height = videoPreview.videoHeight;
+    canvas.getContext('2d').drawImage(videoPreview, 0, 0);
+    window.recordedFileData = { base64: canvas.toDataURL('image/jpeg').split(',')[1], mimeType: 'image/jpeg', extension: '.jpg' };
+    document.getElementById('uploadBtn').disabled = false;
+    alert("फोटो घेतला!");
+});
+
+function convertBlobToBase64(blob) {
+    return new Promise(resolve => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result.split(',')[1]);
+        reader.readAsDataURL(blob);
+    });
+}
